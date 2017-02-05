@@ -1,13 +1,12 @@
 var cacheName = 'TheDay1.0';
 var filesToCache = [
-    '/',
-    '/index.html',
-    '/js/app.js',
-    '/js/jquery-3.1.1.min.js',
-    '/js/materialize.min.js',
-    '/css/icon.css',
-    '/css/icon.woff2',
-    '/css/materialize.min.css'
+    'index.html',
+    'js/app.js',
+    'js/jquery-3.1.1.min.js',
+    'js/materialize.min.js',
+    'css/icon.css',
+    'css/icon.woff2',
+    'css/materialize.min.css'
 ];
 
 self.addEventListener('install', function (e) {
