@@ -48,9 +48,9 @@
             node.querySelector('.description').textContent = node.querySelector('.eventname').textContent = data.eventname + '已经'
             if (node.querySelector('.secondary-content')) {
                 node.querySelector('.daysleft').classList.remove('blue')
-                node.querySelector('.daysleft').classList.add('amber')
+                node.querySelector('.daysleft').classList.add('orange')
                 node.querySelector('.secondary-content').classList.remove('blue')
-                node.querySelector('.secondary-content').classList.add('amber')
+                node.querySelector('.secondary-content').classList.add('orange')
             }
         }
         node.querySelector('.daysleft').textContent = Math.abs(daysleft)
