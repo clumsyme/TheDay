@@ -13,8 +13,8 @@
             top: 0,
             nodes: [
                 {
-                    "eventname": "iPhone发布",
-                    "theday": "2007-1-9 周二"
+                    "eventname": "AlphaGo首次击败人类",
+                    "theday": "2016-3-15 周二"
                 }
             ]
         },
@@ -43,9 +43,11 @@
         node.removeAttribute('hidden');
         node.classList.remove('eventTemplate')
         if (daysleft >= 0) {
-            node.querySelector('.description').textContent = node.querySelector('.eventname').textContent = '距离' + data.eventname
+            node.querySelector('.description').textContent = node.querySelector('.eventname').textContent 
+                                                           = '距离' + data.eventname
         } else {
-            node.querySelector('.description').textContent = node.querySelector('.eventname').textContent = data.eventname + '已经'
+            node.querySelector('.description').textContent = node.querySelector('.eventname').textContent 
+                                                           = data.eventname + '已经'
             if (node.querySelector('.secondary-content')) {
                 node.querySelector('.daysleft').classList.remove('blue')
                 node.querySelector('.daysleft').classList.add('orange')
@@ -116,7 +118,8 @@
         var newindex = todos.nodes.indexOf(newevent),
             cloneNode = app.eventTemplate.cloneNode(true)
         app.renderNode(cloneNode, newevent)
-        document.querySelectorAll('.collection-item')[newindex].insertAdjacentElement('afterend', cloneNode)
+        document.querySelectorAll('.collection-item')[newindex]
+                .insertAdjacentElement('afterend', cloneNode)
         cloneNode.querySelector('.removebtn').addEventListener('click', app.removeEvent)
         cloneNode.querySelector('.topbtn').addEventListener('click', app.makeTop)
         cloneNode.querySelector('.cardDaysleft').addEventListener('click', app.toggleFormat)
@@ -256,7 +259,8 @@
             index = Array.from(document.querySelectorAll('.cardDaysleft')).indexOf(target) - 2,
             todos = JSON.parse(localStorage.todos),
             theday
-        index < 0 ? theday = todos.nodes[todos.top].theday.split(' ')[0].split('-') : theday = todos.nodes[index].theday.split(' ')[0].split('-')
+        index < 0 ? theday = todos.nodes[todos.top].theday.split(' ')[0].split('-')
+                  : theday = todos.nodes[index].theday.split(' ')[0].split('-')
         var targetDate = new Date(theday[0], theday[1] - 1, theday[2]),
             now = new Date(),
             daysDelta = Math.abs(Math.ceil((targetDate - now) / 86400000)),
@@ -306,7 +310,7 @@
             format: 'yyyy-m-d ddd',
             container: '#datepicker',
             selectMonths: true,
-            selectYears: 50
+            selectYears: 100
         });
     });
     // 注册ServiceWorker
