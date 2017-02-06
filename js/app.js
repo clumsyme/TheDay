@@ -1,7 +1,6 @@
 // Code by (c) LiYan
 
-// Copyright (C) 2017 LiYan
-
+// Copyright (c) 2017 LiYan
 // Licensed under the MIT License;
 // You may obtain a copy of the License at
 // https://opensource.org/licenses/MIT
@@ -24,7 +23,7 @@
         events: document.querySelector('.events'),
         eventadd: document.querySelector('.eventadd'),
         inputname: document.querySelector('#eventname'),
-        inputday: document.querySelector('#theday'),
+        inputday: document.querySelector('#eventday'),
         sticky: document.querySelector('.sticky'),
         editname: document.querySelector('#editname'),
         editday: document.querySelector('#editday')
@@ -32,15 +31,11 @@
 
     // 将节点元素node用数据data进行渲染
     app.renderNode = function (node, data) {
-        // TODO 以“XX年X月X日”格式显示剩余
         var theday = data.theday.split(' ')[0].split('-'),
             year = theday[0],
             month = theday[1] - 1,
             day = theday[2],
             now = new Date(),
-            thisyear = now.getFullYear(),
-            thismonth = now.getMonth(),
-            thisday = now.getDay(),
             thedayDate = new Date(year, month, day),
             datedelta = thedayDate - now,
             daysleft = Math.ceil(datedelta / 86400000)
@@ -71,7 +66,7 @@
         } else {
             var todos = JSON.parse(localStorage.todos)
         }
-        
+
         app.renderNode(app.sticky, todos.nodes[todos.top])
         for (let node of todos.nodes) {
             let cloneNode = app.eventTemplate.cloneNode(true)
@@ -82,14 +77,13 @@
     app.init()
     // 按事件时间排序函数
     app.cmp = function cmp(a, b) {
-        // iOS上new Date('yyyy-mm-dd')格式错误
-        var stringa = a.theday.split(' ')[0].split('-')
-        var stringb = b.theday.split(' ')[0].split('-')
-        var datea = new Date(stringa[0], stringa[1] - 1, stringa[2])
-        var dateb = new Date(stringb[0], stringb[1] - 1, stringb[2])
-        var now = new Date()
-        var deltaa = datea - now + 86400000
-        var deltab = dateb - now + 86400000
+        var stringa = a.theday.split(' ')[0].split('-'),
+            stringb = b.theday.split(' ')[0].split('-'),
+            datea = new Date(stringa[0], stringa[1] - 1, stringa[2]),
+            dateb = new Date(stringb[0], stringb[1] - 1, stringb[2]),
+            now = new Date(),
+            deltaa = datea - now + 86400000,
+            deltab = dateb - now + 86400000
         if (deltaa >= 0 && deltab >= 0) {
             return deltaa - deltab
         } else if (deltaa < 0 && deltab < 0) {
@@ -104,10 +98,10 @@
     }
     // 添加事件
     app.addEvent = function () {
-        var todos = JSON.parse(localStorage.todos)
-        var nodes = todos.nodes
-        var thisEventname = app.inputname.value
-        var thisTheday = app.inputday.value
+        var todos = JSON.parse(localStorage.todos),
+            nodes = todos.nodes,
+            thisEventname = app.inputname.value,
+            thisTheday = app.inputday.value
         if (!thisEventname || !thisTheday) { return }
 
         var newevent = {
@@ -119,40 +113,36 @@
         todos.nodes = nodes
         localStorage.setItem('todos', JSON.stringify(todos))
 
-        var newindex = todos.nodes.indexOf(newevent)
-        var cloneNode = app.eventTemplate.cloneNode(true)
+        var newindex = todos.nodes.indexOf(newevent),
+            cloneNode = app.eventTemplate.cloneNode(true)
         app.renderNode(cloneNode, newevent)
         document.querySelectorAll('.collection-item')[newindex].insertAdjacentElement('afterend', cloneNode)
-        // 为新节点按钮添加事件处理函数
         cloneNode.querySelector('.removebtn').addEventListener('click', app.removeEvent)
         cloneNode.querySelector('.topbtn').addEventListener('click', app.makeTop)
+        cloneNode.querySelector('.cardDaysleft').addEventListener('click', app.toggleFormat)
         app.inputname.value = ''
         app.inputday.value = ''
     }
     document.querySelector('.addeventbtn').addEventListener('click', app.addEvent)
+
     // 删除事件
     app.removeEvent = function () {
-        var activeNode = document.querySelector('.collection-item.active')
-        var activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1
-        var todos = JSON.parse(localStorage.todos)
-        var nodes = todos.nodes
-        // 删除当前节点DOM
+        var activeNode = document.querySelector('.collection-item.active'),
+            activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1,
+            todos = JSON.parse(localStorage.todos),
+            nodes = todos.nodes
         app.events.removeChild(activeNode)
-        // 更改缓存数据
         nodes.splice(activeIndex, 1)
         todos.nodes = nodes
         localStorage.setItem('todos', JSON.stringify(todos))
-        // 如果删除节点事件为置顶节点事件
         if (activeIndex == todos.top) {
             if (nodes.length !== 0) {
                 app.renderNode(app.sticky, nodes[0])
             } else {
-                // 如果事件被全部删除，用初始事件渲染置顶节点
                 app.renderNode(app.sticky, app.todos.nodes[0])
             }
         }
     }
-    // 为所有删除按钮添加时间监听
     Array.from(document.querySelectorAll('.removebtn')).forEach(
         function (element) {
             element.addEventListener('click', app.removeEvent)
@@ -160,10 +150,10 @@
     )
     // 置顶事件
     app.makeTop = function () {
-        var activeNode = document.querySelector('.collection-item.active')
-        var activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1
-        var todos = JSON.parse(localStorage.todos)
-        var nodes = todos.nodes
+        var activeNode = document.querySelector('.collection-item.active'),
+            activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1,
+            todos = JSON.parse(localStorage.todos),
+            nodes = todos.nodes
         todos.top = activeIndex
         localStorage.setItem('todos', JSON.stringify(todos))
         app.renderNode(app.sticky, nodes[todos.top])
@@ -175,13 +165,16 @@
     )
     // 编辑事件
     app.editEvent = function () {
-        var activeNode = document.querySelector('.collection-item.active')
-        var activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1
-        var todos = JSON.parse(localStorage.todos)
-        var nodes = todos.nodes
+        var activeNode = document.querySelector('.collection-item.active'),
+            activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1,
+            todos = JSON.parse(localStorage.todos),
+            nodes = todos.nodes,
+            editEventname = app.editname.value,
+            editTheday = app.editday.value
+        if (!editEventname || !editTheday) {return}
         nodes[activeIndex] = {
-            "eventname": app.editname.value,
-            "theday": app.editday.value
+            "eventname": editEventname,
+            "theday": editTheday
         }
         todos.nodes = nodes
         localStorage.setItem('todos', JSON.stringify(todos))
@@ -192,9 +185,116 @@
     }
     document.querySelector('.savebtn').addEventListener('click', app.editEvent)
 
+
+    // ***************************************************
+    // 
+    // 日期转换函数，如果是同一天，则返回‘0天’，
+    // 否则，选择较早的日期作为smalldate，较晚的日期为bigdate
+    // 计算smalldate与bigdate的日期差
+    // 
+    // ***************************************************
+    app.getFullDelta = function(date) {
+        var now = new Date(),
+            yearNow = now.getFullYear(),
+            monthNow = now.getMonth(),
+            dayNow = now.getDate(),
+            yearDelta = 0, monthDelta = 0, dayDelta = 0,
+            days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        
+        if (-86400000 < date - now && date - now < 0) {
+            return '0天'
+        } else {
+            var smalldate = new Date(yearNow, monthNow, dayNow),
+                bigdate
+            date - smalldate > 0 ? bigdate = date : [bigdate, smalldate] = [smalldate, date]
+            let bigyear = bigdate.getFullYear()
+            if (bigyear % 400 == 0 || (bigyear % 4 == 0 && bigyear || 100 !== 0)) {
+                days[1] = 29
+            }
+            smalldate.setFullYear(smalldate.getFullYear() + 1)
+            while (bigdate - smalldate >= 0) {
+                yearDelta++
+                smalldate.setFullYear(smalldate.getFullYear() + 1)
+            }
+
+            if (bigdate.getFullYear() < smalldate.getFullYear()) {
+                smalldate.setFullYear(smalldate.getFullYear() - 1)
+                if (bigdate.getDate() >= smalldate.getDate()) {
+                    monthDelta = bigdate.getMonth() - smalldate.getMonth()
+                    dayDelta = bigdate.getDate() - smalldate.getDate()
+                } else {
+                    monthDelta = bigdate.getMonth() - smalldate.getMonth() - 1
+                    dayDelta = days[bigdate.getMonth() - 1] - smalldate.getDate() +
+                        bigdate.getDate()
+                }
+            } else {
+                var monthDeltaA = 11 - smalldate.getMonth(),
+                    monthDeltaB,
+                    dayDelta
+                if (bigdate.getDate() >= smalldate.getDate()) {
+                    monthDeltaB = bigdate.getMonth() + 1
+                    dayDelta = bigdate.getDate() - smalldate.getDate()
+                } else {
+                    monthDeltaB = bigdate.getMonth()
+                    dayDelta = days[smalldate.getMonth()] - smalldate.getDate() + bigdate.getDate()
+                }
+                monthDelta = monthDeltaA + monthDeltaB
+            }
+            if (yearDelta !== 0) {
+                return yearDelta + '年' + monthDelta + '月' + dayDelta + '天'
+            }
+            if (monthDelta !== 0) {
+                return monthDelta + '月' + dayDelta + '天'
+            }
+            return dayDelta + '天'
+        }
+    }
+
+    // 点击卡片日期转换日期显示格式
+    app.toggleFormat = function (e) {
+        var target = e.target,
+            index = Array.from(document.querySelectorAll('.cardDaysleft')).indexOf(target) - 2,
+            todos = JSON.parse(localStorage.todos),
+            theday
+        index < 0 ? theday = todos.nodes[todos.top].theday.split(' ')[0].split('-') : theday = todos.nodes[index].theday.split(' ')[0].split('-')
+        var targetDate = new Date(theday[0], theday[1] - 1, theday[2]),
+            now = new Date(),
+            daysDelta = Math.abs(Math.ceil((targetDate - now) / 86400000)),
+            fullDelta = app.getFullDelta(targetDate)
+
+        if (target.classList.toggle('full')) {
+            target.textContent = fullDelta
+            if (fullDelta.length > 3) {
+                target.style.fontSize = '50px'
+            }
+            if (fullDelta.length > 6) {
+                target.style.fontSize = '40px'
+            }
+        } else {
+            target.textContent = daysDelta + '天'
+            target.style.fontSize = '60px'
+        }
+    }
+    Array.from(document.querySelectorAll('.cardDaysleft')).forEach(
+        function (element) {
+            element.addEventListener('click', app.toggleFormat)
+        }
+    )
+
     // MaterialCSS模块初始化
     $(document).ready(function () {
-        $('.modal').modal();
+        $('#modal1').modal();
+        $('#modal2').modal({
+            ready: function (modal, trigger) {
+                var activeNode = document.querySelector('.collection-item.active'),
+                    activeIndex = $('.collection-item').index(activeNode) - 1,
+                    todos = JSON.parse(localStorage.todos)
+                $('#editname').val(todos.nodes[activeIndex].eventname)
+                $('#editname').next().addClass('active')
+                $('#editday').val(todos.nodes[activeIndex].theday)
+                $('#editday').next().addClass('active')
+            }
+        });
         $('.datepicker').pickadate({
             monthsFull: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
             monthsShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],

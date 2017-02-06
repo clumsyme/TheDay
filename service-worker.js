@@ -1,4 +1,4 @@
-var cacheName = 'TheDay1.0';
+var cacheName = 'TheDay1.2';
 var filesToCache = [
     'index.html',
     'js/app.js',
@@ -34,7 +34,6 @@ self.addEventListener('activate', function (e) {
 });
 
 self.addEventListener('fetch', function (e) {
-    console.log('[ServiceWorker] Fetch', e.request.url);
     e.respondWith(
         caches.match(e.request).then(function (response) {
             return response || fetch(e.request);
