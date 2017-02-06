@@ -1,6 +1,8 @@
 {
-  "name": "Weather",
-  "short_name": "Weather",
+  "name": "TheDay",
+  "short_name": "TheDay",
+  "author": "LiYan",
+  "description": "A app for countdown days.",
   "icons": [{
     "src": "images/icons/icon-128x128.png",
       "sizes": "128x128",
@@ -22,8 +24,8 @@
       "sizes": "256x256",
       "type": "image/png"
     }],
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#3E4EB8",
-  "theme_color": "#2F3BA2"
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2"
 }

@@ -13,7 +13,7 @@
             top: 0,
             nodes: [
                 {
-                    "eventname": "AlphaGo首次击败人类",
+                    "eventname": "AlphaGo击败人类",
                     "theday": "2016-3-15 周二"
                 }
             ]
