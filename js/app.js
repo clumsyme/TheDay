@@ -11,12 +11,10 @@
     var app = {
         todos: {
             top: 0,
-            nodes: [
-                {
+            nodes: [{
                     "eventname": "AlphaGo击败人类",
                     "theday": "2016-3-15 周二"
-                }
-            ]
+            }]
         },
         sticky: document.querySelector('.sticky'),
         eventTemplate: document.querySelector('.eventTemplate'),
@@ -211,7 +209,7 @@
                 bigdate
             date - smalldate > 0 ? bigdate = date : [bigdate, smalldate] = [smalldate, date]
             let bigyear = bigdate.getFullYear()
-            if (bigyear % 400 == 0 || (bigyear % 4 == 0 && bigyear || 100 !== 0)) {
+            if (bigyear % 400 == 0 || (bigyear % 4 == 0 && bigyear % 100 !== 0)) {
                 days[1] = 29
             }
             smalldate.setFullYear(smalldate.getFullYear() + 1)
