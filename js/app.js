@@ -227,8 +227,7 @@
                     dayDelta = bigdate.getDate() - smalldate.getDate()
                 } else {
                     monthDelta = bigdate.getMonth() - smalldate.getMonth() - 1
-                    dayDelta = days[bigdate.getMonth() - 1] - smalldate.getDate() +
-                        bigdate.getDate()
+                    dayDelta = days[bigdate.getMonth() - 1] - smalldate.getDate() + bigdate.getDate()
                 }
             } else {
                 var monthDeltaA = 11 - smalldate.getMonth(),
@@ -239,7 +238,7 @@
                     dayDelta = bigdate.getDate() - smalldate.getDate()
                 } else {
                     monthDeltaB = bigdate.getMonth()
-                    dayDelta = days[smalldate.getMonth()] - smalldate.getDate() + bigdate.getDate()
+                    dayDelta = days[bigdate.getMonth() - 1] - smalldate.getDate() + bigdate.getDate()
                 }
                 monthDelta = monthDeltaA + monthDeltaB
             }
