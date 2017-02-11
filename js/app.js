@@ -104,8 +104,6 @@
         }
         nodes.push(newevent)
         nodes = nodes.sort(app.cmp)
-        todos.nodes = nodes
-        localStorage.setItem('todos', JSON.stringify(todos))
 
         var newindex = todos.nodes.indexOf(newevent),
             cloneNode = app.eventTemplate.cloneNode(true)
@@ -117,6 +115,11 @@
         cloneNode.querySelector('.cardDaysleft').addEventListener('click', app.toggleFormat)
         app.inputname.value = ''
         app.inputday.value = ''
+        todos.nodes = nodes
+        if (newindex <= todos.top) {
+            todos.top++
+        }
+        localStorage.setItem('todos', JSON.stringify(todos))
     }
     document.querySelector('.addeventbtn').addEventListener('click', app.addEvent)
 
@@ -129,14 +132,17 @@
         app.events.removeChild(activeNode)
         nodes.splice(activeIndex, 1)
         todos.nodes = nodes
-        localStorage.setItem('todos', JSON.stringify(todos))
         if (activeIndex == todos.top) {
+            todos.top = 0
             if (nodes.length !== 0) {
                 app.renderNode(app.sticky, nodes[0])
             } else {
                 app.renderNode(app.sticky, app.todos.nodes[0])
             }
+        } else if (activeIndex < todos.top) {
+            todos.top--
         }
+        localStorage.setItem('todos', JSON.stringify(todos))
     }
     Array.from(document.querySelectorAll('.removebtn')).forEach(
         function (element) {
@@ -187,6 +193,10 @@
         if (activeIndex == todos.top) {
             app.renderNode(app.sticky, newevent)
             todos.top = newindex
+        } else if (activeIndex > todos.top && newindex <= todos.top) {
+            todos.top++
+        } else if (activeIndex < todos.top && newindex >= todos.top) {
+            todos.top--
         }
         todos.nodes = nodes
         localStorage.setItem('todos', JSON.stringify(todos))  
