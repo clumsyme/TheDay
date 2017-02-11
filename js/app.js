@@ -86,15 +86,9 @@
             deltab = dateb - now + 86400000
         if (deltaa >= 0 && deltab >= 0) {
             return deltaa - deltab
-        } else if (deltaa < 0 && deltab < 0) {
-            return deltab - deltaa
         } else {
-            if (deltaa < 0) {
-                return 1
-            } else {
-                return -1
-            }
-        }
+            return deltab - deltaa
+        } 
     }
     // 添加事件
     app.addEvent = function () {
