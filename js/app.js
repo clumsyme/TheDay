@@ -145,6 +145,7 @@
     )
     // 置顶事件
     app.makeTop = function () {
+        console.log(898)
         var activeNode = document.querySelector('.collection-item.active'),
             activeIndex = Array.from(app.events.children).indexOf(activeNode) - 1,
             todos = JSON.parse(localStorage.todos),
@@ -167,16 +168,28 @@
             editEventname = app.editname.value,
             editTheday = app.editday.value
         if (!editEventname || !editTheday) {return}
-        nodes[activeIndex] = {
+        var newevent = {
             "eventname": editEventname,
             "theday": editTheday
         }
-        todos.nodes = nodes
-        localStorage.setItem('todos', JSON.stringify(todos))
-        app.renderNode(activeNode, nodes[activeIndex])
+        nodes[activeIndex] = newevent
+        app.renderNode(activeNode, newevent)
+        // 删除原节点并按新顺序插入新节点
+        nodes.sort(app.cmp)
+        var newindex = nodes.indexOf(newevent),
+            backupNode = activeNode.cloneNode(true)
+        app.events.removeChild(activeNode)
+        backupNode.querySelector('.removebtn').addEventListener('click', app.removeEvent)
+        backupNode.querySelector('.topbtn').addEventListener('click', app.makeTop)
+        backupNode.querySelector('.cardDaysleft').addEventListener('click', app.toggleFormat)
+        document.querySelectorAll('.collection-item')[newindex]
+                .insertAdjacentElement('afterend', backupNode)
         if (activeIndex == todos.top) {
-            app.renderNode(app.sticky, nodes[activeIndex])
+            app.renderNode(app.sticky, newevent)
+            todos.top = newindex
         }
+        todos.nodes = nodes
+        localStorage.setItem('todos', JSON.stringify(todos))  
     }
     document.querySelector('.savebtn').addEventListener('click', app.editEvent)
 
