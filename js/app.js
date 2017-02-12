@@ -58,23 +58,6 @@
         node.querySelector('.theday').textContent = data.theday
 
     }
-    // 初始化页面
-    app.init = function () {
-        if (!localStorage.todos || JSON.parse(localStorage.todos).nodes.length == 0) {
-            var todos = app.todos
-            localStorage.todos = JSON.stringify(todos)
-        } else {
-            var todos = JSON.parse(localStorage.todos)
-        }
-
-        app.renderNode(app.sticky, todos.nodes[todos.top])
-        for (let node of todos.nodes) {
-            let cloneNode = app.eventTemplate.cloneNode(true)
-            app.renderNode(cloneNode, node)
-            app.events.appendChild(cloneNode)
-        }
-    }
-    app.init()
     // 按事件时间排序函数
     app.cmp = function cmp(a, b) {
         var stringa = a.theday.split(' ')[0].split('-'),
@@ -90,6 +73,28 @@
             return deltab - deltaa
         } 
     }
+    // 初始化页面
+    app.init = function () {
+        if (!localStorage.todos || JSON.parse(localStorage.todos).nodes.length == 0) {
+            var todos = app.todos
+        } else {
+            var todos = JSON.parse(localStorage.todos)
+        }
+        // 更新时间排序及置顶事件序号
+        var topNode = todos.nodes[todos.top]
+        todos.nodes = todos.nodes.sort(app.cmp)
+        var newTop = todos.nodes.indexOf(topNode)
+        todos.top = newTop
+        localStorage.todos = JSON.stringify(todos)
+        
+        app.renderNode(app.sticky, todos.nodes[todos.top])
+        for (let node of todos.nodes) {
+            let cloneNode = app.eventTemplate.cloneNode(true)
+            app.renderNode(cloneNode, node)
+            app.events.appendChild(cloneNode)
+        }
+    }
+    app.init()
     // 添加事件
     app.addEvent = function () {
         var todos = JSON.parse(localStorage.todos),
